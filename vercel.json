@@ -1,12 +1,12 @@
 {
-    "version": 2,
-    "builds": [
-      { "src": "*.py", "use": "@vercel/python" },
-      { "src": "requirements.txt", "use": "@vercel/pip" }
-    ],
-    "routes": [
-      { "handle": "python", "src": "wsgi.py" },
-      { "src": "/.*", "dest": "wsgi.py" }
-    ]
-  }
+  "version": 2,
+  "builds": [
+    { "src": "*.py", "use": "@vercel/python" },
+    { "src": "requirements.txt", "use": "@vercel/pip" }
+  ],
+  "routes": [
+    { "src": "wsgi.py" },
+    { "src": "/.*", "dest": "wsgi.py" }
+  ]
+}
   
