@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>SVM-SMOTE</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Vendor CSS Files -->
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+    crossorigin="anonymous"
+  />
+  <!-- Template Main CSS File -->
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="{{ url_for('static',filename='styles/stylesResult.css') }}"
+  />
+
+</head>
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <div class="logo">
+        <h1 ><a href="/">SVM-SMOTE</a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+      </div>
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a class="active" href="/SVM">Tabel SVM</a></li>
+          <li><a href="/SVM_SMOTE">Tabel SVM SMOTE</a></li>
+        </ul>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header><!-- End Header -->
+  <main id="main">
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+      <div class="breadcrumb-hero">
+        <div class="container">
+          <div class="breadcrumb-hero">
+            <h2>Tabel Analisis SVM+SMOTE</h2>
+            <!-- <p>Est dolorum ut non facere possimus quibusdam eligendi voluptatem. Quia id aut similique quia voluptas sit quaerat debitis. Rerum omnis ipsam aperiam consequatur laboriosam nemo harum praesentium. </p> -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services ">
+      <div class="container">
+
+        <div class="row mt-5">
+          <div class="col-md-12">
+            
+            <div class="table table-responsive">
+              <table class="thead-dark">
+                <thead>
+                  <tr>
+                    <th>Text</th>
+                    <th>Label</th>
+                    <th>SVM + SMOTE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in data.to_dict(orient='records') %}
+                  <tr>
+                    <td>{{ row['Text'] }}</td>
+                    <td>{{ row['Label'] }}</td>
+                    <td>{{ row['SVM_SMOTE'] }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                {% if page_number > 1 %}
+                <li class="page-item">
+                  <a
+                    class="page-link"
+                    href="?page={{ page_number - 1 }}"
+                    tabindex="-1"
+                    aria-disabled="true"
+                    >Previous</a
+                  >
+                </li>
+                {% endif %} {% for page in range(1, num_pages + 1) %}
+                <li class="page-item {% if page == page_number %} active {% endif %}">
+                  <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                </li>
+                {% endfor %} {% if page_number < num_pages %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_number + 1 }}">Next</a>
+                </li>
+                {% endif %}
+              </ul>
+            </nav>
+
+
+
+
+
+          </div>    
+        </div>
+
+      </div>
+    </section><!-- End Services Section -->
+  </main><!-- End #main -->
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Helmi Farizki</span>
+      </div>
+      <div class="credits">
+        Jurusan Teknik Informatika 2023
+      </div>
+    </div>
+  </footer><!-- End Footer -->
+</body>
+</html>
