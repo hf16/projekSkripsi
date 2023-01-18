@@ -208,8 +208,11 @@ def SVM():
     # Make predictions on the test set using the SVM model without SMOTE
     y_pred_no_smote = svm_no_smote.predict(X_test_tfidf)
 
+    # SVM_DF = pd.DataFrame({'Text': [X_preprocessed[i] for i in range(
+    #     len(test_y))], 'Label': test_y, 'SVM': y_pred_no_smote})
     SVM_DF = pd.DataFrame({'Text': [X_preprocessed[i] for i in range(
-        len(test_y))], 'Label': test_y, 'SVM': y_pred_no_smote})
+        len(test_y))], 'Label': [df_preprocessed['Label'][i] for i in range(
+            len(test_y))], 'SVM': y_pred_no_smote})
 
   # set the number of items per page
     per_page = 20
@@ -247,8 +250,11 @@ def SVM_SMOTE():
     modelSVM_SMOTE.fit(x_train, y_train)
     predictedSVM_SMOTE = modelSVM_SMOTE.predict(x_test)
 
+    # SVM_SMOTE_DF = pd.DataFrame({'Text': [X_preprocessed[i] for i in range(
+    #     len(y_test))], 'Label': y_test, 'SVM_SMOTE': predictedSVM_SMOTE})
     SVM_SMOTE_DF = pd.DataFrame({'Text': [X_preprocessed[i] for i in range(
-        len(y_test))], 'Label': y_test, 'SVM_SMOTE': predictedSVM_SMOTE})
+        len(y_test))], 'Label': [df_preprocessed['Label'][i] for i in range(
+            len(y_test))], 'SVM_SMOTE': predictedSVM_SMOTE})
 
     # set the number of items per page
     per_page = 20
