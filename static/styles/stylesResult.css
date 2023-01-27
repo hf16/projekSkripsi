@@ -13,12 +13,7 @@ a:hover {
   text-decoration: none;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1,h2,h3,h4,h5,h6 {
   font-family: "Raleway", sans-serif;
 }
 
@@ -214,31 +209,22 @@ h6 {
 .navbar-mobile .getstarted:focus {
   margin: 15px;
 }
-
 /*--------------------------------------------------------------
-# Hero Section
+# Section
 --------------------------------------------------------------*/
-
-/*--------------------------------------------------------------
-# Breadcrumbs
---------------------------------------------------------------*/
-.breadcrumbs {
+.section {
   padding: 0;
 }
-
-.breadcrumbs .breadcrumb-hero {
+.section .section-hero {
   text-align: center;
   background: white;
   padding: 5px ;
   color: black;
 }
-
-
-
 /*--------------------------------------------------------------
-# Services
+# Hasil Analisis
 --------------------------------------------------------------*/
-.services .icon-box {
+.analisis .icon-box {
   padding: 30px;
   position: relative;
   overflow: hidden;
@@ -248,36 +234,29 @@ h6 {
   box-shadow: 0 2px 29px 0 rgba(68, 88, 144, 0.12);
   transition: all 0.3s ease-in-out;
 }
-
-.services .icon-box:hover {
+.analisis .icon-box:hover {
   transform: translateY(-5px);
 }
-
-.services .icon {
+.analisis .icon {
   position: absolute;
   left: -20px;
   top: calc(50% - 30px);
 }
-
-.services .icon i {
+.analisis .icon i {
   font-size: 64px;
   line-height: 1;
   transition: 0.5s;
 }
-
-.services .title {
+.analisis .title {
   margin-left: 40px;
   font-weight: 700;
   margin-bottom: 15px;
   font-size: 18px;
 }
-
-.services .title a {
+.analisis .title a {
   color: #111;
 }
-
-
-.services .description {
+.analisis .description {
   font-size: 14px;
   margin-left: 40px;
   line-height: 24px;
@@ -293,6 +272,7 @@ h6 {
   padding: 0 0 30px 0;
   color: white;
   font-size: 14px;
+  margin-top: 58px;
 }
 
 

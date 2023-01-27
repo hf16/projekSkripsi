@@ -179,28 +179,6 @@ h6 {
   -webkit-animation: animate-loading-notify 1s linear infinite;
   animation: animate-loading-notify 1s linear infinite;
 }
-
-@-webkit-keyframes animate-loading-notify {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes animate-loading-notify {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-
 /*--------------------------------------------------------------
 # Footer
 --------------------------------------------------------------*/

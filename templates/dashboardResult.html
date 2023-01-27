@@ -6,7 +6,6 @@
   <title>SVM-SMOTE</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
-
   <!-- Vendor CSS Files -->
   <link
     rel="stylesheet"
@@ -20,45 +19,37 @@
     type="text/css"
     href="{{ url_for('static',filename='styles/stylesResult.css') }}"
   />
-
 </head>
 <body>
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
-
       <div class="logo">
         <h1 ><a href="/">SVM-SMOTE</a></h1>
-        <!-- Uncomment below if you prefer to use an image logo -->
-        <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
-
       <nav id="navbar" class="navbar">
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a class="active" href="/SVM">Tabel SVM</a></li>
-          <li><a href="/SVM_SMOTE">Tabel SVM SMOTE</a></li>
+          <li><a class="active" href="/tabel_svm">Tabel SVM</a></li>
+          <li><a href="/tabel_svm_smote">Tabel SVM+SMOTE</a></li>
         </ul>
       </nav><!-- .navbar -->
-
     </div>
   </header><!-- End Header -->
   <main id="main">
-    <!-- ======= Breadcrumbs ======= -->
-    <section id="breadcrumbs" class="breadcrumbs">
-      <div class="breadcrumb-hero">
+    <!-- ======= Section ======= -->
+    <section id="section" class="section">
+      <div class="section-hero">
         <div class="container">
-          <div class="breadcrumb-hero">
+          <div class="section-hero">
             <h2>Hasil Analisis</h2>
-            <!-- <p>Est dolorum ut non facere possimus quibusdam eligendi voluptatem. Quia id aut similique quia voluptas sit quaerat debitis. Rerum omnis ipsam aperiam consequatur laboriosam nemo harum praesentium. </p> -->
           </div>
         </div>
       </div>
     </section>
-    <!-- ======= Services Section ======= -->
-    <section id="services" class="services ">
+    <!-- ======= Hasil Analisis ======= -->
+    <section id="analisis" class="analisis ">
       <div class="container">
-
         <div class="row mt-5">
           <div class="col-md-6">
             <div class="icon-box" >
@@ -66,9 +57,8 @@
               <p class="description">Hasil Akurasi : {{ acc_svm * 100}} % </p>
               <p class="description">Hasil Precision : {{precision_svm * 100}} % </p>
               <p class="description">Hasil Recall : {{recall_svm * 100}} % </p>
-              <p class="description">Hasil f1-score : {{f1_svm * 100}}% </p>
-              <p class="description">Hasil Mean K-Fold : {{K_Fold_SVM * 100 }} %</p>
-              <p class="description">List Hasil K-Fold : {{cv_scores_SVM * 100}} </p>           
+              <p class="description">Hasil f1-score : {{f1_svm * 100}}% </p>  
+              <p class="description">Waktu Komputasi : {{waktu_komputasi_SVM}} detik</p>   
             </div>
           </div>
           <div class="col-md-6">
@@ -78,15 +68,13 @@
               <p class="description">Hasil Precision : {{precision_svm_smote * 100}} %</p>
               <p class="description">Hasil Recall : {{recall_svm_smote * 100}} % </p>
               <p class="description">Hasil f1-score : {{f1_svm_smote * 100}} % </p>
-              <p class="description">Hasil Mean K-Fold : {{K_Fold_SMOTE * 100 }} % </p>
-              <p class="description">List Hasil K-Fold : {{cv_scores_SMOTE * 100}} </p>
+              <p class="description">Waktu Komputasi : {{waktu_komputasi_SVM_SMOTE}} detik </p>
             </div>
           </div>
           </div>
         </div>
-
       </div>
-    </section><!-- End Services Section -->
+    </section><!-- End  Section -->
   </main><!-- End #main -->
   <!-- ======= Footer ======= -->
   <footer id="footer">

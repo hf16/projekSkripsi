@@ -5,13 +5,11 @@
     <title>Analisis Sentimen</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
-
     <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,600,600i,700,700i"
       rel="stylesheet"
     />
-
     <!-- Vendor CSS Files -->
     <link
       rel="stylesheet"
@@ -19,15 +17,13 @@
       integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
       crossorigin="anonymous"
     />
-
     <!-- Template Main CSS File -->
     <link
       rel="stylesheet"
       type="text/css"
-      href="{{ url_for('static',filename='styles/styles.css') }}"
+      href="{{ url_for('static',filename='styles/stylesIndex.css') }}"
     />
   </head>
-
   <body>
     <!-- ======= Header ======= -->
     <header id="header" class="d-flex align-items-center">
@@ -41,22 +37,19 @@
           width="200"
           height="230"
         />
-
         <div class="subscribe">
           <h4>Upload File Dataset :</h4>
           <form
             method="POST"
             enctype="multipart/form-data"
-            action="{{ url_for('result') }}"
+            action="{{ url_for('predictResult_svm_smote') }}"
           >
-            <input type="file" name="file" />
-            <input type="submit" value="Submit" />
+            <input type="file" name="file" value="Input" />
+            <input type="submit" value="Predict" />
           </form>
         </div>
       </div>
     </header>
-    <!-- End #header -->
-
     <!-- ======= Footer ======= -->
     <footer id="footer">
       <div class="container">
@@ -67,7 +60,6 @@
       </div>
     </footer>
     <!-- End #footer -->
-
     <a
       href="#"
       class="back-to-top d-flex align-items-center justify-content-center"
