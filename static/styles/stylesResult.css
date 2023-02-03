@@ -225,7 +225,7 @@ h1,h2,h3,h4,h5,h6 {
 # Hasil Analisis
 --------------------------------------------------------------*/
 .analisis .icon-box {
-  padding: 30px;
+  padding: 10px;
   position: relative;
   overflow: hidden;
   border-radius: 10px;
@@ -269,16 +269,15 @@ h1,h2,h3,h4,h5,h6 {
 --------------------------------------------------------------*/
 #footer {
   background: #3498db;
-  padding: 0 0 30px 0;
+  padding: 0 0 10px 0;
   color: white;
   font-size: 14px;
-  margin-top: 58px;
 }
 
 
 #footer .copyright {
   text-align: center;
-  padding-top: 30px;
+  padding-top: 10px;
 }
 
 #footer .credits {

@@ -42,7 +42,7 @@
       <div class="section-hero">
         <div class="container">
           <div class="section-hero">
-            <h2>Hasil Analisis</h2>
+            <h2 style="font-weight: bold;">DASHBOARD</h2>
           </div>
         </div>
       </div>
@@ -50,25 +50,30 @@
     <!-- ======= Hasil Analisis ======= -->
     <section id="analisis" class="analisis ">
       <div class="container">
-        <div class="row mt-5">
-          <div class="col-md-6">
-            <div class="icon-box" >
-              <h4 class="title text-center"><a href="">SVM</a></h4>
-              <p class="description">Hasil Akurasi : {{ acc_svm * 100}} % </p>
-              <p class="description">Hasil Precision : {{precision_svm * 100}} % </p>
-              <p class="description">Hasil Recall : {{recall_svm * 100}} % </p>
-              <p class="description">Hasil f1-score : {{f1_svm * 100}}% </p>  
-              <p class="description">Waktu Komputasi : {{waktu_komputasi_SVM}} detik</p>   
+        <div class="row justify-content-center"> 
+          <div class="col-md-4">
+            <div class="icon-box">
+              <h5 class="text-center">INFORMASI DATASET</h5>
+              <p class="text-center" style="font-size:30px; font-weight: bold;"> {{jumlah_data}}</p>
+              <p class="description" style="font-size:15px; font-weight: bold;">Detail </p>
+              <p class="description">Positif : {{positive_count}} </p>
+              <p class="description">Negatif : {{negative_count}} </p> 
             </div>
           </div>
-          <div class="col-md-6">
+        </div>
+        <div class="row mt-2 row justify-content-around">
+          <div class="col-md-4">
             <div class="icon-box">
-              <h4 class="title text-center"><a href="">SVM + SMOTE</a></h4>
-              <p class="description">Hasil Akurasi : {{ acc_svm_smote * 100}} %</p>
-              <p class="description">Hasil Precision : {{precision_svm_smote * 100}} %</p>
-              <p class="description">Hasil Recall : {{recall_svm_smote * 100}} % </p>
-              <p class="description">Hasil f1-score : {{f1_svm_smote * 100}} % </p>
-              <p class="description">Waktu Komputasi : {{waktu_komputasi_SVM_SMOTE}} detik </p>
+              <h5 class="text-center">Akurasi SVM</h5>
+              <p class="text-center" style="font-size:30px; font-weight: bold;"> {{acc_svm }}% </p>
+              <p class="description" style="font-size:15px">Waktu Komputasi: {{waktu_komputasi_SVM}} detik</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="icon-box">
+              <h5 class="text-center">Akurasi SVM+SMOTE</h5>
+              <p class="text-center" style="font-size:30px; font-weight: bold;"> {{acc_svm_smote }}% </p>
+              <p class="description" style="font-size:15px">Waktu Komputasi: {{waktu_komputasi_SVM_SMOTE}} detik</p>
             </div>
           </div>
           </div>

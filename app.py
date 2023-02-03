@@ -116,34 +116,21 @@ def predictResult_svm_smote():
     Dataset_covid = uploadData
     df_preprocessed = dataset()
     X_preprocessed = df_preprocessed['Text']
-    train_X, test_X, train_y, test_y = train_test_split(
-        df_preprocessed['Text'], df_preprocessed['Label'], train_size=0.8)
-    # Apply TF-IDF vectorization
+    train_X = df_preprocessed['Text']
+    train_y = df_preprocessed['Label']
     tfidf_vectorizer = TfidfVectorizer(max_features=5000)
     X_train_tfidf = tfidf_vectorizer.fit_transform(train_X)
-    X_test_tfidf = tfidf_vectorizer.transform(test_X)
-    # Model SVM tanpa SMOTE
+    # X_test_tfidf = tfidf_vectorizer.transform(test_X)
     svm_no_smote = LinearSVC()
     svm_no_smote.fit(X_train_tfidf, train_y)
-    y_pred_no_smote = svm_no_smote.predict(X_test_tfidf)
-    # acc_svm = accuracy_score(test_y, y_pred_no_smote)
-    # acc_svm_1 = round(acc_svm, 4)
-    # recall_svm = recall_score(test_y, y_pred_no_smote, pos_label='negative')
-    # recall_svm_1 = round(recall_svm, 4)
-    # precision_svm = precision_score(
-    #     test_y, y_pred_no_smote, pos_label='negative')
-    # precision_svm_1 = round(precision_svm, 4)
-    # f1_svm = f1_score(
-    #     test_y, y_pred_no_smote, pos_label='negative')
-    # f1_svm_1 = round(f1_svm, 4)
-
+    # y_pred_no_smote = svm_no_smote.predict(X_test_tfidf)
     kf = KFold(n_splits=5, shuffle=True)
-    precision = make_scorer(precision_score, average='macro')
-    recall = make_scorer(recall_score, average='macro')
-    f1 = make_scorer(f1_score, average='macro')
+    precision = make_scorer(precision_score, pos_label='positive')
+    recall = make_scorer(recall_score, pos_label='positive')
+    f1 = make_scorer(f1_score, pos_label='positive')
     cv_scores_accuracy = cross_val_score(
         svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring='accuracy')
-    acc_svm_1 = cv_scores_accuracy.mean()
+    acc_svm_1 = "%.2f" % (float(cv_scores_accuracy.mean()) * 100)
     cv_scores_precision = cross_val_score(
         svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=precision)
     precision_svm_1 = cv_scores_precision.mean()
@@ -154,30 +141,17 @@ def predictResult_svm_smote():
         svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=f1)
     f1_svm_1 = cv_scores_f1.mean()
     end_time_SVM = time.time()
-    waktu_komputasi_SVM = end_time_SVM - start_time_SVM
+    waktu_komputasi_SVM = "%.2f" % (end_time_SVM - start_time_SVM)
     # Model SVM dengan Kombinasi SMOTE
     tfidf_vecto = TfidfVectorizer()
     X = tfidf_vecto.fit_transform(X_preprocessed)
     smote = SMOTE()
     X_resample, y_resample = smote.fit_resample(X, df_preprocessed['Label'])
-    x_train, x_test, y_train, y_test = train_test_split(
-        X_resample, y_resample, train_size=0.8, random_state=42)
+    x_train = X_resample
+    y_train = y_resample
     modelSVM_SMOTE = SVC(kernel='linear', probability=True)
     modelSVM_SMOTE.fit(x_train, y_train)
-    predictedSVM_SMOTE = modelSVM_SMOTE.predict(x_test)
-
-    # acc_svm_smote = accuracy_score(y_test, predictedSVM_SMOTE)
-    # acc_svm_smote_1 = round(acc_svm_smote, 4)
-    # recall_svm_smote = recall_score(
-    #     y_test, predictedSVM_SMOTE, pos_label='negative')
-    # recall_svm_smote_1 = round(recall_svm_smote, 4)
-    # precision_svm_smote = recall_score(
-    #     y_test, predictedSVM_SMOTE, pos_label='negative')
-    # precision_svm_smote_1 = round(precision_svm_smote, 4)
-    # f1_svm_smote = f1_score(
-    #     y_test, predictedSVM_SMOTE, pos_label='negative')
-    # f1_svm_smote_1 = round(f1_svm_smote, 4)
-
+    # predictedSVM_SMOTE = modelSVM_SMOTE.predict(x_test)
     cv_scores_accuracy_smote = cross_val_score(
         modelSVM_SMOTE, x_train, y_train, cv=kf, scoring='accuracy')
     cv_scores_precision_smote = cross_val_score(
@@ -186,22 +160,28 @@ def predictResult_svm_smote():
         modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=recall)
     cv_scores_f1_smote = cross_val_score(
         modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=f1)
-    acc_svm_smote_1 = cv_scores_accuracy_smote.mean()
+    acc_svm_smote_1 = "%.2f" % (float(cv_scores_accuracy_smote.mean()) * 100)
     precision_svm_smote_1 = cv_scores_precision_smote.mean()
     recall_svm_smote_1 = cv_scores_recall_smote.mean()
     f1_svm_smote_1 = cv_scores_f1_smote.mean()
-
+    positive_count = sum(train_y == 'positive')
+    negative_count = sum(train_y == 'negative')
+    jumlah_data = len(train_y)
     end_time_SVM_SMOTE = time.time()
-    waktu_komputasi_SVM_SMOTE = end_time_SVM_SMOTE - start_time_SVM_SMOTE
-    return render_template('dashboardResult.html', acc_svm=acc_svm_1, recall_svm=recall_svm_1, recall_svm_smote=recall_svm_smote_1, precision_svm=precision_svm_1, precision_svm_smote=precision_svm_smote_1, f1_svm=f1_svm_1, acc_svm_smote=acc_svm_smote_1, f1_svm_smote=f1_svm_smote_1, waktu_komputasi_SVM=waktu_komputasi_SVM, waktu_komputasi_SVM_SMOTE=waktu_komputasi_SVM_SMOTE)
+    waktu_komputasi_SVM_SMOTE = "%.2f" % (
+        end_time_SVM_SMOTE - start_time_SVM_SMOTE)
+    return render_template('dashboardResult.html', cv_scores_accuracy=cv_scores_accuracy, cv_scores_precision=cv_scores_precision, cv_scores_recall=cv_scores_recall, cv_scores_f1=cv_scores_f1,
+                           cv_scores_accuracy_smote=cv_scores_accuracy_smote, cv_scores_precision_smote=cv_scores_precision_smote, cv_scores_recall_smote=cv_scores_recall_smote, cv_scores_f1_smote=cv_scores_f1_smote,
+                           acc_svm=acc_svm_1, recall_svm=recall_svm_1, recall_svm_smote=recall_svm_smote_1, precision_svm=precision_svm_1, precision_svm_smote=precision_svm_smote_1, f1_svm=f1_svm_1, acc_svm_smote=acc_svm_smote_1, f1_svm_smote=f1_svm_smote_1, waktu_komputasi_SVM=waktu_komputasi_SVM, waktu_komputasi_SVM_SMOTE=waktu_komputasi_SVM_SMOTE,
+                           jumlah_data=jumlah_data, positive_count=positive_count, negative_count=negative_count)
 
 
-@app.route('/tabel_svm')
+@ app.route('/tabel_svm')
 def tabel_svm():
     df_preprocessed = dataset()
     X_preprocessed = df_preprocessed['Tweet']
     train_X, test_X, train_y, test_y = train_test_split(
-        df_preprocessed['Text'], df_preprocessed['Label'], train_size=0.8)
+        df_preprocessed['Text'], df_preprocessed['Label'])
     # Apply TF-IDF vectorization
     tfidf_vectorizer = TfidfVectorizer(max_features=5000)
     X_train_tfidf = tfidf_vectorizer.fit_transform(train_X)
@@ -229,7 +209,7 @@ def tabel_svm():
     return render_template('tabel_svm.html', data=SVM_TABEL, num_pages=num_pages, page_number=page_number)
 
 
-@app.route('/tabel_svm_smote')
+@ app.route('/tabel_svm_smote')
 def tabel_svm_smote():
     df_preprocessed = dataset()
     X_preprocessed = df_preprocessed['Text']
@@ -239,13 +219,14 @@ def tabel_svm_smote():
     X_resample, y_resample = smote.fit_resample(X, df_preprocessed['Label'])
     # Split Data
     x_train, x_test, y_train, y_test = train_test_split(
-        X_resample, y_resample, train_size=0.8, random_state=42)
+        X_resample, y_resample, random_state=42)
     # Modeling SVM
     modelSVM_SMOTE = SVC(kernel='linear', probability=True)
     modelSVM_SMOTE.fit(x_train, y_train)
-    predictedSVM_SMOTE = modelSVM_SMOTE.predict(x_test)
+    # predictedSVM_SMOTE = modelSVM_SMOTE.predict(x_test)
     SVM_SMOTE_DF = pd.DataFrame({'Text': [df_preprocessed['Tweet'][i] for i in range(
-        len(y_test))], 'SVM_SMOTE': predictedSVM_SMOTE})
+        len(y_test))], 'SVM_SMOTE': [df_preprocessed['Label'][i] for i in range(
+            len(y_test))]})
     # Set Peganation
     per_page = 20
     num_pages = math.ceil(SVM_SMOTE_DF.shape[0]/per_page)
@@ -259,5 +240,7 @@ def tabel_svm_smote():
     return render_template('tabel_svm_smote.html', data=SVM_SMOTE_TABEL, num_pages=num_pages, page_number=page_number)
 
 
+# if __name__ == '__main__':
+#     app.run()
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
