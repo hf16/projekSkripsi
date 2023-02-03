@@ -11,6 +11,7 @@ import csv
 import math
 import time
 import nltk
+from builtins import max
 nltk.download('stopwords')
 
 
@@ -125,21 +126,21 @@ def predictResult_svm_smote():
     svm_no_smote.fit(X_train_tfidf, train_y)
     # y_pred_no_smote = svm_no_smote.predict(X_test_tfidf)
     kf = KFold(n_splits=5, shuffle=True)
-    precision = make_scorer(precision_score, pos_label='positive')
-    recall = make_scorer(recall_score, pos_label='positive')
-    f1 = make_scorer(f1_score, pos_label='positive')
+    # precision = make_scorer(precision_score, pos_label='positive')
+    # recall = make_scorer(recall_score, pos_label='positive')
+    # f1 = make_scorer(f1_score, pos_label='positive')
     cv_scores_accuracy = cross_val_score(
         svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring='accuracy')
     acc_svm_1 = "%.2f" % (float(cv_scores_accuracy.mean()) * 100)
-    cv_scores_precision = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=precision)
-    precision_svm_1 = cv_scores_precision.mean()
-    cv_scores_recall = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=recall)
-    recall_svm_1 = cv_scores_recall.mean()
-    cv_scores_f1 = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=f1)
-    f1_svm_1 = cv_scores_f1.mean()
+    # cv_scores_precision = cross_val_score(
+    #     svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=precision)
+    # precision_svm_1 = cv_scores_precision.mean()
+    # cv_scores_recall = cross_val_score(
+    #     svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=recall)
+    # recall_svm_1 = cv_scores_recall.mean()
+    # cv_scores_f1 = cross_val_score(
+    #     svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=f1)
+    # f1_svm_1 = cv_scores_f1.mean()
     end_time_SVM = time.time()
     waktu_komputasi_SVM = "%.2f" % (end_time_SVM - start_time_SVM)
     # Model SVM dengan Kombinasi SMOTE
@@ -154,26 +155,29 @@ def predictResult_svm_smote():
     # predictedSVM_SMOTE = modelSVM_SMOTE.predict(x_test)
     cv_scores_accuracy_smote = cross_val_score(
         modelSVM_SMOTE, x_train, y_train, cv=kf, scoring='accuracy')
-    cv_scores_precision_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=precision)
-    cv_scores_recall_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=recall)
-    cv_scores_f1_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=f1)
+    # cv_scores_precision_smote = cross_val_score(
+    #     modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=precision)
+    # cv_scores_recall_smote = cross_val_score(
+    #     modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=recall)
+    # cv_scores_f1_smote = cross_val_score(
+    #     modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=f1)
     acc_svm_smote_1 = "%.2f" % (float(cv_scores_accuracy_smote.mean()) * 100)
-    precision_svm_smote_1 = cv_scores_precision_smote.mean()
-    recall_svm_smote_1 = cv_scores_recall_smote.mean()
-    f1_svm_smote_1 = cv_scores_f1_smote.mean()
+    # precision_svm_smote_1 = cv_scores_precision_smote.mean()
+    # recall_svm_smote_1 = cv_scores_recall_smote.mean()
+    # f1_svm_smote_1 = cv_scores_f1_smote.mean()
     positive_count = sum(train_y == 'positive')
     negative_count = sum(train_y == 'negative')
     jumlah_data = len(train_y)
     end_time_SVM_SMOTE = time.time()
     waktu_komputasi_SVM_SMOTE = "%.2f" % (
         end_time_SVM_SMOTE - start_time_SVM_SMOTE)
-    return render_template('dashboardResult.html', cv_scores_accuracy=cv_scores_accuracy, cv_scores_precision=cv_scores_precision, cv_scores_recall=cv_scores_recall, cv_scores_f1=cv_scores_f1,
-                           cv_scores_accuracy_smote=cv_scores_accuracy_smote, cv_scores_precision_smote=cv_scores_precision_smote, cv_scores_recall_smote=cv_scores_recall_smote, cv_scores_f1_smote=cv_scores_f1_smote,
-                           acc_svm=acc_svm_1, recall_svm=recall_svm_1, recall_svm_smote=recall_svm_smote_1, precision_svm=precision_svm_1, precision_svm_smote=precision_svm_smote_1, f1_svm=f1_svm_1, acc_svm_smote=acc_svm_smote_1, f1_svm_smote=f1_svm_smote_1, waktu_komputasi_SVM=waktu_komputasi_SVM, waktu_komputasi_SVM_SMOTE=waktu_komputasi_SVM_SMOTE,
+    return render_template('dashboardResult.html', acc_svm=acc_svm_1, acc_svm_smote=acc_svm_smote_1,  waktu_komputasi_SVM=waktu_komputasi_SVM, waktu_komputasi_SVM_SMOTE=waktu_komputasi_SVM_SMOTE,
                            jumlah_data=jumlah_data, positive_count=positive_count, negative_count=negative_count)
+
+    # return render_template('dashboardResult.html', cv_scores_accuracy=cv_scores_accuracy, cv_scores_precision=cv_scores_precision, cv_scores_recall=cv_scores_recall, cv_scores_f1=cv_scores_f1,
+    #                        cv_scores_accuracy_smote=cv_scores_accuracy_smote, cv_scores_precision_smote=cv_scores_precision_smote, cv_scores_recall_smote=cv_scores_recall_smote, cv_scores_f1_smote=cv_scores_f1_smote,
+    #                        acc_svm=acc_svm_1, recall_svm=recall_svm_1, recall_svm_smote=recall_svm_smote_1, precision_svm=precision_svm_1, precision_svm_smote=precision_svm_smote_1, f1_svm=f1_svm_1, acc_svm_smote=acc_svm_smote_1, f1_svm_smote=f1_svm_smote_1, waktu_komputasi_SVM=waktu_komputasi_SVM, waktu_komputasi_SVM_SMOTE=waktu_komputasi_SVM_SMOTE,
+    #                        jumlah_data=jumlah_data, positive_count=positive_count, negative_count=negative_count)
 
 
 @ app.route('/tabel_svm')
@@ -206,6 +210,7 @@ def tabel_svm():
     elif page_number < 1:
         page_number = 1
     SVM_TABEL = SVM_DF.iloc[per_page*(page_number-1):per_page*page_number]
+
     return render_template('tabel_svm.html', data=SVM_TABEL, num_pages=num_pages, page_number=page_number)
 
 
