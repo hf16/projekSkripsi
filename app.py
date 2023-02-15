@@ -16,7 +16,7 @@ nltk.download('stopwords')
 
 app = Flask(__name__)
 
-Dataset_covid = pd.DataFrame()
+dataset_input = pd.DataFrame()
 
 
 def cleansing(data):
@@ -88,6 +88,23 @@ def preprocessing(data):
     return data
 
 
+def TFIDF(prm_tfidf):
+    tfidf_vectorizer = TfidfVectorizer()
+    uji_tfidf = tfidf_vectorizer.fit_transform(prm_tfidf)
+    return uji_tfidf
+
+
+def SVM(prm_x, prm_y):
+    svm = LinearSVC()
+    uji_svm = svm.fit(prm_x, prm_y)
+    return uji_svm
+
+
+def oversamplingSMOTE():
+    uji_smote = SMOTE()
+    return uji_smote
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -95,7 +112,7 @@ def index():
 
 def dataset():
     # Membaca file dataset
-    df = Dataset_covid
+    df = dataset_input
     Z = df['Id'].tolist()
     X = df['Text'].tolist()
     y = df['Label'].tolist()
@@ -112,16 +129,14 @@ def predictResult_svm_smote():
     start_time_SVM_SMOTE = time.time()
     file = request.files['file']
     uploadData = pd.read_excel(file)
-    global Dataset_covid
-    Dataset_covid = uploadData
+    global dataset_input
+    dataset_input = uploadData
     df_preprocessed = dataset()
     X_preprocessed = df_preprocessed['Text']
     train_X = df_preprocessed['Text']
     train_y = df_preprocessed['Label']
-    tfidf_vectorizer = TfidfVectorizer()
-    X_train_tfidf = tfidf_vectorizer.fit_transform(train_X)
-    svm_no_smote = LinearSVC()
-    svm_no_smote.fit(X_train_tfidf, train_y)
+    X_train_tfidf = TFIDF(train_X)
+    svm_no_smote = SVM(X_train_tfidf, train_y)
     kf = KFold(n_splits=5, shuffle=True)
     precision = make_scorer(precision_score, pos_label='positive')
     recall = make_scorer(recall_score, pos_label='positive')
@@ -141,10 +156,10 @@ def predictResult_svm_smote():
     end_time_SVM = time.time()
     waktu_komputasi_SVM = "%.2f" % (end_time_SVM - start_time_SVM)
     # Model SVM dengan Kombinasi SMOTE
-    tfidf_vecto = TfidfVectorizer()
-    X = tfidf_vecto.fit_transform(X_preprocessed)
-    smote = SMOTE()
-    X_resample, y_resample = smote.fit_resample(X, df_preprocessed['Label'])
+    X_tfidf_smote = TFIDF(X_preprocessed)
+    smote = oversamplingSMOTE()
+    X_resample, y_resample = smote.fit_resample(
+        X_tfidf_smote, df_preprocessed['Label'])
     x_train = X_resample
     y_train = y_resample
     modelSVM_SMOTE = SVC(kernel='linear', probability=True)
@@ -177,10 +192,8 @@ def tabel_svm():
     df_preprocessed = dataset()
     train_X = df_preprocessed['Text']
     train_y = df_preprocessed['Label']
-    tfidf_vectorizer = TfidfVectorizer()
-    X_train_tfidf = tfidf_vectorizer.fit_transform(train_X)
-    svm_no_smote = LinearSVC()
-    svm_no_smote.fit(X_train_tfidf, train_y)
+    X_train_tfidf = TFIDF(train_X)
+    svm_no_smote = SVM(X_train_tfidf, train_y)
     kf = KFold(n_splits=5, shuffle=True)
     cv_predictions = cross_val_predict(
         svm_no_smote, X_train_tfidf, train_y, cv=kf)
@@ -205,20 +218,20 @@ def tabel_svm():
 def tabel_svm_smote():
     df_preprocessed = dataset()
     X_preprocessed = df_preprocessed['Text']
-    tfidf_vecto = TfidfVectorizer()
-    X = tfidf_vecto.fit_transform(X_preprocessed)
-    smote = SMOTE()
-    X_resample, y_resample = smote.fit_resample(X, df_preprocessed['Label'])
+    cv_label = df_preprocessed['Label']
+    X_tfidf_smote = TFIDF(X_preprocessed)
+    smote = oversamplingSMOTE()
+    X_resample, y_resample = smote.fit_resample(
+        X_tfidf_smote, df_preprocessed['Label'])
     x_train = X_resample
     y_train = y_resample
-    modelSVM_SMOTE = SVC(kernel='linear', probability=True)
-    modelSVM_SMOTE.fit(x_train, y_train)
+    modelSVM_SMOTE = SVM(x_train, y_train)
     kf = KFold(n_splits=5, shuffle=True)
     cv_predictions = cross_val_predict(
         modelSVM_SMOTE, x_train, y_train, cv=kf)
     cv_scores_accuracy_smote = cross_val_score(
         modelSVM_SMOTE, x_train, y_train, cv=kf, scoring='accuracy')
-    cv_predictions = df_preprocessed['Label']
+    cv_predictions = cv_label
     acc_svm_smote_1 = "%.2f" % (float(cv_scores_accuracy_smote.mean()) * 100)
     SVM_SMOTE_DF = pd.DataFrame({'Text': [df_preprocessed['Tweet'][i] for i in range(
         len(cv_predictions))], 'SVM_SMOTE': [df_preprocessed['Label'][i] for i in range(
