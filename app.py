@@ -16,8 +16,6 @@ nltk.download('stopwords')
 
 app = Flask(__name__)
 
-dataset_input = pd.DataFrame()
-
 
 def cleansing(data):
     # Case Folding
@@ -110,6 +108,9 @@ def index():
     return render_template('index.html')
 
 
+dataset_input = pd.DataFrame()
+
+
 def dataset():
     # Membaca file dataset
     df = dataset_input
@@ -133,25 +134,25 @@ def predictResult_svm_smote():
     dataset_input = uploadData
     df_preprocessed = dataset()
     X_preprocessed = df_preprocessed['Text']
-    train_X = df_preprocessed['Text']
-    train_y = df_preprocessed['Label']
-    X_train_tfidf = TFIDF(train_X)
-    svm_no_smote = SVM(X_train_tfidf, train_y)
+    uji_X = df_preprocessed['Text']
+    uji_Y = df_preprocessed['Label']
+    X_uji_tfidf = TFIDF(uji_X)
+    svm_no_smote = SVM(X_uji_tfidf, uji_Y)
     kf = KFold(n_splits=5, shuffle=True)
     precision = make_scorer(precision_score, pos_label='positive')
     recall = make_scorer(recall_score, pos_label='positive')
     f1 = make_scorer(f1_score, pos_label='positive')
     cv_scores_accuracy = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring='accuracy')
+        svm_no_smote, X_uji_tfidf, uji_Y, cv=kf, scoring='accuracy')
     acc_svm_1 = "%.2f" % (float(cv_scores_accuracy.mean()) * 100)
     cv_scores_precision = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=precision)
+        svm_no_smote, X_uji_tfidf, uji_Y, cv=kf, scoring=precision)
     prec_svm = "%.2f" % (float(cv_scores_precision.mean()) * 100)
     cv_scores_recall = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=recall)
+        svm_no_smote, X_uji_tfidf, uji_Y, cv=kf, scoring=recall)
     recall_svm = "%.2f" % (float(cv_scores_recall.mean()) * 100)
     cv_scores_f1 = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring=f1)
+        svm_no_smote, X_uji_tfidf, uji_Y, cv=kf, scoring=f1)
     f1_svm = "%.2f" % (float(cv_scores_f1.mean()) * 100)
     end_time_SVM = time.time()
     waktu_komputasi_SVM = "%.2f" % (end_time_SVM - start_time_SVM)
@@ -160,26 +161,25 @@ def predictResult_svm_smote():
     smote = oversamplingSMOTE()
     X_resample, y_resample = smote.fit_resample(
         X_tfidf_smote, df_preprocessed['Label'])
-    x_train = X_resample
-    y_train = y_resample
-    modelSVM_SMOTE = SVC(kernel='linear', probability=True)
-    modelSVM_SMOTE.fit(x_train, y_train)
+    X_uji = X_resample
+    Y_uji = y_resample
+    modelSVM_SMOTE = SVM(X_uji, Y_uji)
     cv_scores_accuracy_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring='accuracy')
+        modelSVM_SMOTE, X_uji, Y_uji, cv=kf, scoring='accuracy')
     acc_svm_smote_1 = "%.2f" % (float(cv_scores_accuracy_smote.mean()) * 100)
     cv_scores_precision_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=precision)
+        modelSVM_SMOTE, X_uji, Y_uji, cv=kf, scoring=precision)
     prec_smote = "%.2f" % (
         float(cv_scores_precision_smote.mean()) * 100)
     cv_scores_recall_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=recall)
+        modelSVM_SMOTE, X_uji, Y_uji, cv=kf, scoring=recall)
     recall_smote = "%.2f" % (float(cv_scores_recall_smote.mean()) * 100)
     cv_scores_f1_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring=f1)
+        modelSVM_SMOTE, X_uji, Y_uji, cv=kf, scoring=f1)
     f1_smote = "%.2f" % (float(cv_scores_f1_smote.mean()) * 100)
-    positive_count = sum(train_y == 'positive')
-    negative_count = sum(train_y == 'negative')
-    jumlah_data = len(train_y)
+    positive_count = sum(uji_Y == 'positive')
+    negative_count = sum(uji_Y == 'negative')
+    jumlah_data = len(uji_Y)
     end_time_SVM_SMOTE = time.time()
     waktu_komputasi_SVM_SMOTE = "%.2f" % (
         end_time_SVM_SMOTE - start_time_SVM_SMOTE)
@@ -190,18 +190,18 @@ def predictResult_svm_smote():
 @ app.route('/tabel_svm')
 def tabel_svm():
     df_preprocessed = dataset()
-    train_X = df_preprocessed['Text']
-    train_y = df_preprocessed['Label']
-    X_train_tfidf = TFIDF(train_X)
-    svm_no_smote = SVM(X_train_tfidf, train_y)
+    uji_X = df_preprocessed['Text']
+    uji_Y = df_preprocessed['Label']
+    X_uji_tfidf = TFIDF(uji_X)
+    svm_no_smote = SVM(X_uji_tfidf, uji_Y)
     kf = KFold(n_splits=5, shuffle=True)
     cv_predictions = cross_val_predict(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf)
+        svm_no_smote, X_uji_tfidf, uji_Y, cv=kf)
     cv_scores_accuracy = cross_val_score(
-        svm_no_smote, X_train_tfidf, train_y, cv=kf, scoring='accuracy')
+        svm_no_smote, X_uji_tfidf, uji_Y, cv=kf, scoring='accuracy')
     acc_svm_1 = "%.2f" % (float(cv_scores_accuracy.mean()) * 100)
     SVM_DF = pd.DataFrame({'Text': [df_preprocessed['Tweet'][i] for i in range(
-        len(train_X))], 'SVM': cv_predictions})
+        len(uji_X))], 'SVM': cv_predictions})
     per_page = 20
     num_pages = math.ceil(SVM_DF.shape[0]/per_page)
     page_number = int(request.args.get('page', 1))
@@ -223,14 +223,14 @@ def tabel_svm_smote():
     smote = oversamplingSMOTE()
     X_resample, y_resample = smote.fit_resample(
         X_tfidf_smote, df_preprocessed['Label'])
-    x_train = X_resample
-    y_train = y_resample
-    modelSVM_SMOTE = SVM(x_train, y_train)
+    X_uji = X_resample
+    Y_uji = y_resample
+    modelSVM_SMOTE = SVM(X_uji, Y_uji)
     kf = KFold(n_splits=5, shuffle=True)
     cv_predictions = cross_val_predict(
-        modelSVM_SMOTE, x_train, y_train, cv=kf)
+        modelSVM_SMOTE, X_uji, Y_uji, cv=kf)
     cv_scores_accuracy_smote = cross_val_score(
-        modelSVM_SMOTE, x_train, y_train, cv=kf, scoring='accuracy')
+        modelSVM_SMOTE, X_uji, Y_uji, cv=kf, scoring='accuracy')
     cv_predictions = cv_label
     acc_svm_smote_1 = "%.2f" % (float(cv_scores_accuracy_smote.mean()) * 100)
     SVM_SMOTE_DF = pd.DataFrame({'Text': [df_preprocessed['Tweet'][i] for i in range(
