@@ -129,7 +129,7 @@ def predictResult_svm_smote():
     start_time_SVM = time.time()
     start_time_SVM_SMOTE = time.time()
     file = request.files['file']
-    uploadData = pd.read_excel(file)
+    uploadData = pd.read_csv(file)
     global dataset_input
     dataset_input = uploadData
     df_preprocessed = dataset()
@@ -138,7 +138,7 @@ def predictResult_svm_smote():
     uji_Y = df_preprocessed['Label']
     X_uji_tfidf = TFIDF(uji_X)
     svm_no_smote = SVM(X_uji_tfidf, uji_Y)
-    kf = KFold(n_splits=5, shuffle=True)
+    kf = KFold(n_splits=5, shuffle=True, random_state=1)
     precision = make_scorer(precision_score, pos_label='positive')
     recall = make_scorer(recall_score, pos_label='positive')
     f1 = make_scorer(f1_score, pos_label='positive')
@@ -188,7 +188,7 @@ def predictResult_svm_smote():
 
 
 @ app.route('/tabel_svm')
-def tabel_svm():
+def predict_tabel_svm():
     df_preprocessed = dataset()
     uji_X = df_preprocessed['Text']
     uji_Y = df_preprocessed['Label']
@@ -202,7 +202,7 @@ def tabel_svm():
     acc_svm_1 = "%.2f" % (float(cv_scores_accuracy.mean()) * 100)
     SVM_DF = pd.DataFrame({'Text': [df_preprocessed['Tweet'][i] for i in range(
         len(uji_X))], 'SVM': cv_predictions})
-    per_page = 20
+    per_page = 5
     num_pages = math.ceil(SVM_DF.shape[0]/per_page)
     page_number = int(request.args.get('page', 1))
     if page_number > num_pages:
@@ -215,28 +215,25 @@ def tabel_svm():
 
 
 @ app.route('/tabel_svm_smote')
-def tabel_svm_smote():
+def predict_tabel_svm_smote():
     df_preprocessed = dataset()
     X_preprocessed = df_preprocessed['Text']
     cv_label = df_preprocessed['Label']
-    X_tfidf_smote = TFIDF(X_preprocessed)
+    X_uji_tfidf_smote = TFIDF(X_preprocessed)
     smote = oversamplingSMOTE()
     X_resample, y_resample = smote.fit_resample(
-        X_tfidf_smote, df_preprocessed['Label'])
-    X_uji = X_resample
-    Y_uji = y_resample
-    modelSVM_SMOTE = SVM(X_uji, Y_uji)
+        X_uji_tfidf_smote, df_preprocessed['Label'])
+    modelSVM_SMOTE = SVM(X_resample, y_resample)
     kf = KFold(n_splits=5, shuffle=True)
     cv_predictions = cross_val_predict(
-        modelSVM_SMOTE, X_uji, Y_uji, cv=kf)
+        modelSVM_SMOTE, X_uji_tfidf_smote, cv_label, cv=kf)
     cv_scores_accuracy_smote = cross_val_score(
-        modelSVM_SMOTE, X_uji, Y_uji, cv=kf, scoring='accuracy')
+        modelSVM_SMOTE, X_uji_tfidf_smote, cv_label, cv=kf, scoring='accuracy')
     cv_predictions = cv_label
     acc_svm_smote_1 = "%.2f" % (float(cv_scores_accuracy_smote.mean()) * 100)
     SVM_SMOTE_DF = pd.DataFrame({'Text': [df_preprocessed['Tweet'][i] for i in range(
-        len(cv_predictions))], 'SVM_SMOTE': [df_preprocessed['Label'][i] for i in range(
-            len(cv_predictions))]})
-    per_page = 20
+        len(cv_predictions))], 'SVM_SMOTE': cv_predictions})
+    per_page = 5
     num_pages = math.ceil(SVM_SMOTE_DF.shape[0]/per_page)
     page_number = int(request.args.get('page', 1))
     if page_number > num_pages:
